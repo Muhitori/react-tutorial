@@ -15,7 +15,7 @@ class Game extends React.Component<Props, State> {
 		this.state = {
 			history: [
 				{
-					squares: Array(9).fill('')
+					squares: Array(9).fill("")
 				}
 			],
 			isNext: true,
@@ -57,7 +57,7 @@ class Game extends React.Component<Props, State> {
 				squares[a] === squares[b] &&
 				squares[a] === squares[c]
 			) {
-				return squares[a];
+				return { winnerLine: lines[i], winner: squares[a] };
 			}
 		}
 		return null;
@@ -76,7 +76,8 @@ class Game extends React.Component<Props, State> {
 	render() {
 		const history = this.state.history;
 		const current = history[this.state.stepNumber].squares;
-		const winner = this.calculateWinner(current);
+		const winner = this.calculateWinner(current)?.winner;
+		const winnerLine = this.calculateWinner(current)?.winnerLine!;
 
 		const moves = history.map((step, move) => {
 			console.log(move);
@@ -104,6 +105,7 @@ class Game extends React.Component<Props, State> {
 					<Board
 						squares={current}
 						onClick={(i: number) => this.handleClick(i)}
+						winnerLine={winnerLine}
 					/>
 				</div>
 				<div className='game-info'>
