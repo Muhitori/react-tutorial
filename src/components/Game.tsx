@@ -63,6 +63,12 @@ class Game extends React.Component<Props, State> {
 		return null;
 	}
 
+	checkStalemate(current: string[]) {
+		return current.every(cell => {
+			return cell;
+		});
+	}
+
 	jumpTo(step: number) {
 		this.setState({ stepNumber: step, isNext: step % 2 === 0 });
 	}
@@ -82,8 +88,11 @@ class Game extends React.Component<Props, State> {
 		});
 
 		let status;
+		let stalemate = this.checkStalemate(current);
 		if (winner) {
 			status = "Winner is " + winner;
+		} else if (stalemate) {
+			status = "This is stalemate!";
 		} else {
 			status = "Next player: " + (this.state.isNext ? "X" : "O");
 		}
