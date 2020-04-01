@@ -15,7 +15,7 @@ class Game extends React.Component<Props, State> {
 		this.state = {
 			history: [
 				{
-					squares: Array(9)
+					squares: Array(9).fill('')
 				}
 			],
 			isNext: true,
@@ -79,10 +79,11 @@ class Game extends React.Component<Props, State> {
 		const winner = this.calculateWinner(current);
 
 		const moves = history.map((step, move) => {
+			console.log(move);
 			const desc = move ? "To move #" + move : "To start";
 			return (
 				<li key={move}>
-					<button onClick={() => this.jumpTo(move)}> {desc}</button>
+					<button onClick={() => this.jumpTo(move)}> {desc} </button>
 				</li>
 			);
 		});
