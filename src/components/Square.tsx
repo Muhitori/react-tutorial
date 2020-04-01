@@ -5,11 +5,8 @@ interface Props {
 	onClick: Function
 }
 
-interface State {
-	value?: string;
-}
 
-class Square extends React.Component<Props, State> {
+class Square extends React.Component<Props> {
 	render() {
 		return (
 			<button
