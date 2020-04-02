@@ -108,10 +108,13 @@ class Game extends React.Component<Props, State> {
 
 		let moves = history.map((step, move) => {
 			const desc = move ? "To move #" + move : "To start";
-
-			const currentCell = ` ${move % 2 !== 0 ? "X" : "O"} at 
+			let currentCell = "";
+			
+			if (move !== 0) {
+				currentCell = ` ${move % 2 !== 0 ? "X" : "O"} at 
 															Row: ${step.clickedSquare.row} 
 															Column: ${step.clickedSquare.column}`;
+			}
 
 			return (
 				<li key={move}>
