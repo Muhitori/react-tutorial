@@ -7,19 +7,16 @@ interface Props {
 	winnerLine: number[];
 }
 
-interface State {
-}
-
-class Board extends React.Component<Props, State> {
-
+class Board extends React.Component<Props> {
 	renderSquare(i: number) {
 		let winnerCell = false;
 
-		if(this.props.winnerLine !== undefined)
+		if (this.props.winnerLine !== undefined)
 			winnerCell = this.props.winnerLine.includes(i);
 
 		return (
 			<Square
+				key={i}
 				value={this.props.squares[i]}
 				onClick={() => this.props.onClick(i)}
 				winnerCell={winnerCell}
@@ -28,26 +25,17 @@ class Board extends React.Component<Props, State> {
 	}
 
 	render() {
+		let cells: JSX.Element[] = [];
 
-		return (
-			<div>
-				<div className='board-row'>
-					{this.renderSquare(0)}
-					{this.renderSquare(1)}
-					{this.renderSquare(2)}
-				</div>
-				<div className='board-row'>
-					{this.renderSquare(3)}
-					{this.renderSquare(4)}
-					{this.renderSquare(5)}
-				</div>
-				<div className='board-row'>
-					{this.renderSquare(6)}
-					{this.renderSquare(7)}
-					{this.renderSquare(8)}
-				</div>
-			</div>
-		);
+		let k = 0;
+		for (let i = 0; i < 3; i++) {
+			cells.push(<div className='board-row' key={9+i}></div>);
+			for (let j = 0; j < 3; j++, k++) {
+				cells.push(this.renderSquare(k));
+			}
+		}
+
+		return <div>{cells}</div>;
 	}
 }
 

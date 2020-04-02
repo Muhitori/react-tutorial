@@ -4,9 +4,14 @@ import Board from "./Board";
 interface Props {}
 
 interface State {
-	history: { squares: string[] }[];
+	history: {
+		squares: string[];
+		clickedSquare: { row: number; column: number };
+	}[];
 	isNext: boolean;
 	stepNumber: number;
+	ascending: boolean;
+	cellIndex: number;
 }
 
 class Game extends React.Component<Props, State> {
@@ -15,11 +20,14 @@ class Game extends React.Component<Props, State> {
 		this.state = {
 			history: [
 				{
-					squares: Array(9).fill("")
+					squares: Array(9).fill(""),
+					clickedSquare: { row: 0, column: 0 }
 				}
 			],
 			isNext: true,
-			stepNumber: 0
+			stepNumber: 0,
+			ascending: true,
+			cellIndex: 0
 		};
 	}
 
@@ -32,10 +40,17 @@ class Game extends React.Component<Props, State> {
 			return;
 		}
 		squares[i] = this.state.isNext ? "X" : "O";
+
 		this.setState({
-			history: history.concat([{ squares: squares }]),
+			history: history.concat([
+				{
+					squares: squares,
+					clickedSquare: { row: Math.floor(i / 3) + 1, column: (i % 3) + 1 }
+				}
+			]),
 			isNext: !this.state.isNext,
-			stepNumber: history.length
+			stepNumber: history.length,
+			cellIndex: i
 		});
 	}
 
@@ -70,21 +85,44 @@ class Game extends React.Component<Props, State> {
 	}
 
 	jumpTo(step: number) {
-		this.setState({ stepNumber: step, isNext: step % 2 === 0 });
+		this.setState({
+			stepNumber: step,
+			isNext: step % 2 === 0
+		});
 	}
 
 	render() {
+
+		const active = {
+			fontWeight: "bold"
+		} as React.CSSProperties;
+
+		const inactive = {
+			fontWeight: "normal"
+		} as React.CSSProperties;
+
 		const history = this.state.history;
 		const current = history[this.state.stepNumber].squares;
 		const winner = this.calculateWinner(current)?.winner;
 		const winnerLine = this.calculateWinner(current)?.winnerLine!;
 
-		const moves = history.map((step, move) => {
-			console.log(move);
+		let moves = history.map((step, move) => {
 			const desc = move ? "To move #" + move : "To start";
+
+			const currentCell = ` ${move % 2 !== 0 ? "X" : "O"} at 
+															Row: ${step.clickedSquare.row} 
+															Column: ${step.clickedSquare.column}`;
+
 			return (
 				<li key={move}>
-					<button onClick={() => this.jumpTo(move)}> {desc} </button>
+					<a
+						href='/#'
+						style={this.state.stepNumber === move ? active : inactive}
+						className='move'
+						onClick={() => this.jumpTo(move)}>
+						{desc}
+					</a>
+					<span>{currentCell}</span>
 				</li>
 			);
 		});
@@ -110,7 +148,13 @@ class Game extends React.Component<Props, State> {
 				</div>
 				<div className='game-info'>
 					<div className='status'>{status}</div>
-					<ol>{moves}</ol>
+					<button
+						onClick={() => {
+							this.setState({ ascending: !this.state.ascending });
+						}}>
+						Sort moves
+					</button>
+					<ol>{this.state.ascending ? moves : moves.reverse()}</ol>
 				</div>
 			</div>
 		);

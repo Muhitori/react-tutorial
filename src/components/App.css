@@ -53,3 +53,11 @@ ul {
 .winner {
 	background-color: #a6e3b6;
 }
+
+.move {
+	display: inline;
+}
+
+.move:active {
+	border: 2px green solid;
+}
